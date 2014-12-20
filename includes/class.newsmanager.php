@@ -55,7 +55,7 @@ function AffichageComplet($news,$bdd){
 		</div>
 	</article>';
 }
-function AffichageReduit($news,$type){
+function AffichageReduit($news){
 	$date_news=explode("-",$news["date_post"]);
 	$mois=MoisReduit($date_news[1]);
 	
