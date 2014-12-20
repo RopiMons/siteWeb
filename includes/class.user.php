@@ -97,7 +97,7 @@ function CheckFormulaire($prenom,$nom,$pseudo,$mail,$password,$pwd2){
  * Fonctionnalitées ajoutée par Laurent C - laurent.cardon@ropi.be
  */
 
-function getNom($id){
+function getNom($bdd,$id){
     $stmt = $bdd->prepare('SELECT prenompersonnes FROM personnes WHERE idpersonnes= :idpers');
     $stmt->execute(array(
 		'idpers' => $id
@@ -118,5 +118,4 @@ function getNom($id){
 /*
  * Fin des fonctionnalitées ajoutées par Laurent C - laurent.cardon@ropi.be
  */
-
 ?>
