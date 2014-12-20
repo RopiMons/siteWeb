@@ -3,6 +3,7 @@ if(!isset($_GET["id"]))
 	header("location:index.php");
 include("includes/db_connect.php");
 include("includes/functions.php");
+include("includes/class.user.php");
 $titre_page=TitrePage($bdd,"0","",$_GET["id"]);
 
 include("includes/head.php");
@@ -42,7 +43,7 @@ include("includes/menu.php");
 						echo '<i class="icon-time"></i> '.$mois. " " . $date_news[0] . ' ';
 						if($news["categorie"]!="")
                         echo '<i class="icon-tag"></i> Dans <a href="news.php?cat='.$news["categorie"].'">'.$news["categorie"].'</a> ';
-						echo '<i class="icon-user"></i> Par '.$news["auteur"].'</a>'?>
+						echo '<i class="icon-user"></i> Par '.getNom($news["auteur"]).'</a>'?>
           </div>
           <div class="span4">
               <h3>Catégorie de news</h3>

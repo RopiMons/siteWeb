@@ -93,5 +93,30 @@ function CheckFormulaire($prenom,$nom,$pseudo,$mail,$password,$pwd2){
 	}
 }
 
+/*
+ * Fonctionnalitées ajoutée par Laurent C - laurent.cardon@ropi.be
+ */
+
+function getNom($id){
+    $stmt = $bdd->prepare('SELECT prenompersonnes FROM personnes WHERE idpersonnes= :idpers');
+    $stmt->execute(array(
+		'idpers' => $id
+	));
+    $donnees=$stmt->fetch();
+    if($donnees)
+    {
+        $retour = $donnees["prenompersonnes"];
+    }
+    else
+    {
+        $retour = false;
+    }
+    
+    return $retour;
+} 
+
+/*
+ * Fin des fonctionnalitées ajoutées par Laurent C - laurent.cardon@ropi.be
+ */
 
 ?>
