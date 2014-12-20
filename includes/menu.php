@@ -46,11 +46,11 @@ $stmt->closeCursor();?>
 							)?'<li class="active dropdown">' : '<li class="dropdown">';?>
                             
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="le ropi">Le ropi <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="pourquoi-adherer.php" title="Pourquoi adhérer ?">Pourquoi adhérer ?</a></li>
+                                <ul class="dropdown-menu">                                   
                                     <li><a href="en-pratique.php" title="En pratique">En pratique</a></li>
                                     <li><a href="charte.php" title="La charte">La charte</a></li>
                                     <li><a href="l-equipe.php" title="L'équipe">L'équipe</a></li>
+									<li><a href="pourquoi-adherer.php" title="Adhére à l'asbl ?">Adhérer à l'asbl </a></li>
                                     <li><a href="nous-aider.php" title="Nous aider">Nous aider</a></li>
                                 </ul>
                             </li>
