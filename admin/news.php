@@ -450,7 +450,7 @@ else
 				$req->execute(array(
 					'text' => $_POST["contenu"],
 					'titre'=> $_POST["titre"],
-					'auteur' => $_SESSION['user_id'],
+					'auteur' => $_SESSION['id'],
 					'ip_auteur' =>  $_SERVER["REMOTE_ADDR"],
 					'premier_titre' => $pur,
 					'tags' => $_POST["tag"],
