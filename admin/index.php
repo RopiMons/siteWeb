@@ -37,13 +37,13 @@ $moyenne=$calcul/$i;
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Jour', 'Vues'],  
-          ['<?=$jour[6]?>',  <?=$vues[6]?>],
-          ['<?=$jour[5]?>',  <?=$vues[5]?>],
-          ['<?=$jour[4]?>',  <?=$vues[4]?>],
-		  ['<?=$jour[3]?>',  <?=$vues[3]?>],
-		  ['<?=$jour[2]?>',  <?=$vues[2]?>],
-		  ['<?=$jour[1]?>',  <?=$vues[1]?>],
-          ['<?=$jour[0]?>',  <?=$vues[0]?>]
+          ['<?php echo $jour[6]?>',  <?php echo $vues[6]?>],
+          ['<?php echo $jour[5]?>',  <?php echo $vues[5]?>],
+          ['<?php echo $jour[4]?>',  <?php echo $vues[4]?>],
+		  ['<?php echo $jour[3]?>',  <?php echo $vues[3]?>],
+		  ['<?php echo $jour[2]?>',  <?php echo $vues[2]?>],
+		  ['<?php echo $jour[1]?>',  <?php echo $vues[1]?>],
+          ['<?php echo $jour[0]?>',  <?php echo $vues[0]?>]
         ]);
 
         var options = {
@@ -145,7 +145,7 @@ $moyenne=$calcul/$i;
         <form name="mod_ropi" id="mod_ropi" action="#" method="post">   
                 <fieldset>
 					<label for="points">Ropis en circulation</label>
-					<input type="text" id="nb_ropi" name="nb_ropi" value="<?=$ropi_circulation?>" />
+					<input type="text" id="nb_ropi" name="nb_ropi" value="<?php echo $ropi_circulation?>" />
 				</fieldset>            
 					    <input type="submit" name="mod_ropi" id="mod_ropi" value="Mettre à jour les ropis en circulation" class="alt_btn">
                         
