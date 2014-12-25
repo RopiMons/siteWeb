@@ -34,6 +34,11 @@ function FormulaireInscription($pseudo = "") {
 }
 
 function Connexion($bdd, $pseudo, $mdp) {
+    // Si une session existe déjà, on la détrui
+    if(isset($_SESSION) && $_SESSION)
+    {
+        session_destroy();
+    }
     $message = "";
     $stmt = $bdd->prepare('SELECT * FROM personnes WHERE personnespseudo= :username');
     $stmt->execute(array(

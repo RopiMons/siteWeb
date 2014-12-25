@@ -14,7 +14,16 @@ include("includes/header.php");
 $message = "";
 
 function Niveau($bdd, $id, $niveaux) {
-    $sql = 'DELETE FROM typepersonnepersonne WHERE typeperonne_idpersonnes=' . $id . '';
+    
+    // On supprime les anciennes autorisations de la base de donnée
+    $req = $bdd->prepare('DELETE FROM typepersonnepersonne WHERE typeperonne_idpersonnes= :id');
+    $req->execute(array(
+        'id' => $id
+    ));
+    $req->closeCursor();
+    
+    // On ajoute les niveaux autorisés à la table de liaison
+    
     foreach ($niveaux as $niveau) {
         $req = $bdd->prepare('INSERT INTO typepersonnepersonne(typeperonne_idpersonnes,typepersonnepersonne_cataloguetypepersonne)VALUES(:id,:niveau)');
         $req->execute(array(
@@ -179,7 +188,7 @@ if (isset($_GET["add"])) {
             <header><h3>Modifier l'utilisateur</h3>
             </header>
         <?php
-        if (isset($_POST["moduser"])) {
+        if (isset($_POST["moduser"]) && isNiveau("9", $_SESSION["id"], $bdd)) {
             if ($_POST["pass"] != $_POST["premierpass"])
                 $pass = md5($_POST["pass"]);
             else
@@ -196,6 +205,12 @@ if (isset($_GET["add"])) {
             ));
             Niveau($bdd, $_GET["mod"], $_POST["options"]);
             $message = '<h4 class="alert_success">Réussite - Le membre a été mis à jour.</h4>';
+            // Si L'utilisateur courant modifie ses informations, on force la reconnexion afin que les nouvelles informations soient prisent en compte
+            if($_GET["mod"] == $_SESSION["id"])
+            {
+                Connexion($bdd, $_SESSION["username"], $mdp["pasword"]);
+            }
+            
         }
         ?>
 
