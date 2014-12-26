@@ -35,19 +35,18 @@ function FormulaireInscription($pseudo = "") {
 
 function Connexion($bdd, $pseudo, $mdp) {
     // Si une session existe déjà, on la détrui
-    if(isset($_SESSION['id']))
-    {
+    if (isset($_SESSION['id'])) {
         session_destroy();
         session_start();
     }
     $message = "";
-    $stmt = $bdd->prepare('SELECT * FROM personnes WHERE personnespseudo= :username');
+    $stmt = $bdd->prepare('SELECT * FROM personnes WHERE personnespseudo= :username OR  mailpersonnes = :username');
     $stmt->execute(array(
         'username' => $pseudo
     ));
     $donnees = $stmt->fetch();
     if (md5($mdp) == $donnees["passwordpersonnes"]) {
-        $_SESSION['username'] = $pseudo;
+        $_SESSION['username'] = $donnees['personnespseudo'];
         $_SESSION['password'] = $donnees["passwordpersonnes"];
         $_SESSION['id'] = $donnees['idpersonnes'];
 
