@@ -1,5 +1,9 @@
 <?php
-include("includes/head.php");
+session_start();
+include("includes/class.user.php");
+include("includes/class.newsmanager.php");
+//include("includes/class.verif.php");
+include("includes/class.form.php");
 include("includes/db_connect.php");
 include("includes/class.verif.php");
 if(isset($_POST["Connexion"])) 
@@ -19,6 +23,22 @@ if(isset($_POST["Connexion"]))
 include("includes/functions.php");
 $titre_page=TitrePage($bdd,"","Connexion");
 
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<title>Le ropi - <?php echo $titre_page ?></title>
+
+<!--[if lte IE 8]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]--> 
+
+
+<?php
 
 $message="";
 $test="";

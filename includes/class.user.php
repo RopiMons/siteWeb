@@ -35,9 +35,10 @@ function FormulaireInscription($pseudo = "") {
 
 function Connexion($bdd, $pseudo, $mdp) {
     // Si une session existe déjà, on la détrui
-    if(isset($_SESSION) && $_SESSION)
+    if(isset($_SESSION['id']))
     {
         session_destroy();
+        session_start();
     }
     $message = "";
     $stmt = $bdd->prepare('SELECT * FROM personnes WHERE personnespseudo= :username');
@@ -54,7 +55,6 @@ function Connexion($bdd, $pseudo, $mdp) {
         $_SESSION['niveau'] = $niveau;
 
         if ($niveau != 0) {
-            echo "Location";
             header("location:admin/index.php");
         } else {
             $message = "Erreur : Votre compte n'a pas encore été activé par un administrateur.";
