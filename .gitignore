@@ -1,5 +1,0 @@
-/includes/db_connect.php
-.settings/*
-.*
-!.gitignore
-/nbproject/private/

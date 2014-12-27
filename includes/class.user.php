@@ -50,9 +50,9 @@ function VerifConnection(PDO $bdd, $id, $password, $niveau, $requis, $ressource 
         }
         $stmt->closeCursor();
     } else {
-        echo "Dehors !";
-        //session_destroy();
-        //header("location:../connexion.php");
+        //echo "Dehors !";
+        session_destroy();
+        header("location:../connexion.php");
     }
 }
 
