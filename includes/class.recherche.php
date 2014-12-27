@@ -14,7 +14,7 @@
  */
 class Recherche {
     
-    private $sql = "SELECT commerce.commercenom AS nom, commerce.idcommerce AS id, cataloguetypecommerce.cataloguetypecommercelabel AS type FROM commerce LEFT JOIN typecommerce ON commerce.idcommerce = typecommerce.typecommerce_commerceID LEFT JOIN cataloguetypecommerce ON typecommerce.typecommerce_cataloguetypecommerceID = cataloguetypecommerce.idcataloguetypecommerce LEFT JOIN adresses ON commerce.idcommerce = adresses.adressescommerceid LEFT JOIN commerceproduits ON commerce.idcommerce = commerceproduits.produitidcommerce WHERE adresses.adresses_catalogueadressesID = '3'";
+    private $sql = "SELECT DISTINCT commerce.commercenom AS nom, commerce.idcommerce AS id, cataloguetypecommerce.cataloguetypecommercelabel AS type FROM commerce LEFT JOIN typecommerce ON commerce.idcommerce = typecommerce.typecommerce_commerceID LEFT JOIN cataloguetypecommerce ON typecommerce.typecommerce_cataloguetypecommerceID = cataloguetypecommerce.idcataloguetypecommerce LEFT JOIN adresses ON commerce.idcommerce = adresses.adressescommerceid LEFT JOIN commerceproduits ON commerce.idcommerce = commerceproduits.produitidcommerce WHERE adresses.adresses_catalogueadressesID = '3'";
     
     /**
      * Constructeur de la recherche
