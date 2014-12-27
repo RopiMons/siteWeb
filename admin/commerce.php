@@ -1,5 +1,7 @@
 <?php
 session_start();
+include("../includes/class.ressource.php");
+include("../includes/class.parametres.php");
 include("../includes/db_connect.php");
 include("../includes/class.user.php");
 include("../includes/functions.php");
@@ -62,7 +64,7 @@ while ($donnees = $stmt->fetch()) {
     if($donnees2["commercestatus"]>0)
     {
         echo "<td><a href='commerce-gerer.php?edit=" . $donnees2["idcommerce"] . "' title='pages'><input type='image' src='images/icn_edit.png' title='Edit'></a>
-              <a href='commerce-gerer.php?del=" . $donnees2["idcommerce"] . "' title='pages'><input type='image' src='images/icn_trash.png' title='Trash'></a></td>";
+              </tr>";//"<a href='commerce-gerer.php?del=" . $donnees2["idcommerce"] . "' title='pages'><input type='image' src='images/icn_trash.png' title='Trash'></a></td>";
     }else{
         echo "<td>Pas d'actions possible pour l'instant</td>";
     }

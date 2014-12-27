@@ -48,7 +48,7 @@ class Ressource {
      * @return null Met à jour la variable $propriétaire de l'objet
      */
     private function initCommerce($id,PDO $bdd){
-        $req = $bdd->prepare("SELECT compers_personnesID WHERE compers_personnesID = :id");
+        $req = $bdd->prepare("SELECT compers_personnesID FROM compers WHERE compers_commerceID = :id");
         $req->execute(array(
             "id"=>$id,
         ));
@@ -60,4 +60,31 @@ class Ressource {
         $req->closeCursor();
     }
     
+    /**
+     * Retourne le type de la ressource
+     * 
+     * @return String Retourne en toute lettre le type de la Ressource
+     */
+    public function getType(){
+        return $this->type;
+    }
+    
+    /**
+     * Retourne l'id du propeiétaire de la ressource
+     * 
+     * @return String retourne l'ID du propriétaire de la ressource
+     */
+    public function getProprietaire(){
+        return $this->idProprietaire;
+    }
+    
+    /**
+     * Détermine si l'id passé en paramètre correspond à celui du propriétaire de la Ressource
+     * 
+     * @param String $id Id du candidat propriétaire
+     * @return bool Retourne si oui ou non l'id est celui du propriétaire   
+     */
+    public function isProprietaire($id){
+        return $id == $this->idProprietaire;
+    }
 }

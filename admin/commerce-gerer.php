@@ -8,7 +8,18 @@ include("../includes/class.user.php");
 include("../includes/functions.php");
 include("../includes/class.verif.php");
 include("../includes/class.newsmanager.php");
-VerifConnection($bdd, $_SESSION["id"], $_SESSION["password"], $_SESSION["niveau"], 3);
+
+
+if(isset($_GET["edit"]))
+{
+    // On  vérifie si le propriétaire de la ressource peut acceder à cette page.
+    VerifConnection($bdd, $_SESSION["id"], $_SESSION["password"], $_SESSION["niveau"], 9, new Ressource("Commerce",$_GET["edit"],$bdd),"Edit");
+}
+else
+{
+    VerifConnection($bdd, $_SESSION["id"], $_SESSION["password"], $_SESSION["niveau"], 9);
+}
+
 
 $breadcrumbs = '<a href="index.php">Index de l\'administration</a> <div class="breadcrumb_divider"></div> 
 <a href="commerce.php">Mon commerce</a> <div class="breadcrumb_divider"></div> 
@@ -120,7 +131,7 @@ include("includes/header.php");
         </article><!-- end of content manager article -->
                             <?php
                         } elseif (isset($_GET["edit"])) {
-                            if (count($_POST["IMUFiles"])) {
+                            if (isset($_POST["IMUFiles"]) && count($_POST["IMUFiles"])) {
                                 echo "<br />Uploaded files: ";
                                 for ($i = 0; $i < count($_POST["IMUFiles"]); $i++) {
                                     $url_send = $url_image . "/" . $_POST["IMUFiles"][$i];
@@ -173,7 +184,7 @@ include("includes/header.php");
                                     if (isset($_GET["supp"])) {
                                         $req = $bdd->prepare("DELETE FROM adresses WHERE idadresses = :id");
                                         $req->execute(array(
-                                            'id' => $_GET["refus"]
+                                            'id' => $_GET["adresse"]
                                         ));
                                         $message = '<h4 class="alert_warning">L\'adresse a été supprimée.</h4>';
                                     }
@@ -278,7 +289,7 @@ include("includes/header.php");
                                 }
                                 if (isset($_GET["image"])) {
                                     echo "get image";
-                                    if (count($_POST["IMUFiles"])) {
+                                    if (isset($_POST["IMUFiles"]) && count($_POST["IMUFiles"])) {
                                         echo "COUCOUUUUUUUUUUUUUUUUUUUU";
                                         echo "<br />Uploaded files: ";
                                         for ($i = 0; $i < count($_POST["IMUFiles"]); $i++) {
