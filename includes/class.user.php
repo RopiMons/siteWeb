@@ -1,6 +1,18 @@
 <?php
 
-function VerifConnection($bdd, $id, $password, $niveau, $requis) {
+/**
+ * La fonction VerifConnection permet de vérifier si la connection à une page est autorisée.
+ * @authors Macdeb & Laurent Cardon <laurent.cardon@ropi.be>
+ * @param PDO $bdd Objet PDO utilisé pour la connection à la base de donnée
+ * @param String $id Id de la personne demandant la connection
+ * @param String $password Mot de passe de la personne demandant la connection (Mot de passe lié à $id de la personne)
+ * @param Int $niveau Niveau d'accès de la personne liée à $id et $password 
+ * @param Int $requis Niveau recquis pour l'accès à la page
+ * @param Objet $ressource Paramètre optionnel qui de part sa présence autorise une personne à accèder à ses propres ressources 
+ * @return null Redirection vers la page de connection en cas de non-autorisation.
+ * 
+ */
+function VerifConnection(PDO $bdd, $id, $password, $niveau, $requis, $ressource = null) {
     $auth = $niveau - $requis;
     if ($auth < 0) {
         session_destroy;
