@@ -153,7 +153,7 @@ $stmt->closeCursor();
                             ?>
                 <div id="txtHint"></div>
 
-                <h2>Résultats de votre recherche</h2>
+                <h2>Résultat de votre recherche</h2>
                 <table width="100%" class="table table-hover table-striped table-bordered">
                     <tr>
                     <thead><td>Nom du commerce</td><td>Type de commerce</td><td></td></thead>
@@ -162,6 +162,7 @@ $stmt->closeCursor();
                             <?php
                             $i = 0;
                             foreach ($commerces as $commerce) {
+                                $i++;
                                 echo "<tr>";
                                 echo '<td>' . $commerce["nom"]. '</td>';
                                 echo '<td>' . $commerce["type"] . '</td>';
@@ -174,8 +175,16 @@ $stmt->closeCursor();
                 <?php
                 if ($i == 0) {
                     echo "<br /><strong>Aucun commerce ne correspond à vos critères de recherche</strong>";
-                } else
-                    echo $i . " commerces correspondent à vos critères";
+                } else{
+                    if($i>1){
+                        $s = "s";
+                        $ent = "ent";
+                    }else{
+                        $s = "";
+                        $ent = "";
+                    }
+                    echo $i . " commerce$s correspond$ent à vos critères";
+                }
             }
             else {
                 echo "<h2>Aucune recherche effectuée</h2>";
