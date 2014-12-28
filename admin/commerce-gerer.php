@@ -19,7 +19,10 @@ else
 {
     VerifConnection($bdd, $_SESSION["id"], $_SESSION["password"], $_SESSION["niveau"], 9);
 }
-
+if(isset($_POST["IMUFile"]))
+{
+    var_dump($_POST["IMUFile"]);
+}
 
 $breadcrumbs = '<a href="index.php">Index de l\'administration</a> <div class="breadcrumb_divider"></div> 
 <a href="commerce.php">Mon commerce</a> <div class="breadcrumb_divider"></div> 
