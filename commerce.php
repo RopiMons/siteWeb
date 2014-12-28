@@ -32,10 +32,8 @@ $stmt = $bdd->prepare('SELECT * FROM commerceproduits WHERE produitidcommerce =:
 $stmt->execute(array("id"=>$q));
 while($donnees=$stmt->fetch())
 {
-	$description=str_replace("<p>","",$donnees["produitdescription"]);
-	$description=str_replace("</p>","",$description);
-	$description=str_replace("<br/>","",$description);
-	$produits_liste.="<li><a rel='tooltip' href='#' data-original-title='".$description."' >".$donnees["produitnom"]."</a></li>";
+        $description = strip_tags($donnees["produitdescription"]);
+        $produits_liste.= '<li><a class="produit" rel="tooltip" href="#" data-original-title="'.$description.'">'.$donnees["produitnom"]."</a></li>";
 }
 $stmt->closeCursor();
 
@@ -101,7 +99,7 @@ include("includes/menu.php");
       </div>
       <div class="row-fluid corps">
          <div class="span12">
-             <?php if($url !="")
+             <?php if($url)
 			 {
 				 echo '<a href="'.$url.' class="btn btn-large" title="Site du commerce">Voir le site du commerce</a>';
 			 }?>
@@ -128,7 +126,7 @@ if($coords['status']=='OK')
 return $coords;
 }
   include("includes/footer.php");?>
-  <script src="js/jquery.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script>
 function initialize() {
@@ -153,7 +151,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <script type="text/javascript">
     $(function () {
         $("[rel='tooltip']").tooltip({placement:'right'});
+        $(".produit").click(function(){alert($(this).attr("data-original-title"));});
     });
+    
 </script>
   <?php include("includes/pied.php");
    ?>
