@@ -23,6 +23,13 @@ class Parametres {
     static $default = array(false,false,false);
     
     /**
+     * Il s'aggit ici des paramètres concernant l'upload de fichiers
+     */
+    static $uploadMaxSize = "1000000";
+    static $uploadExtension = array('.png', '.gif', '.jpg', '.jpeg');
+    static $uploadLogoFolder = "img/logos/";
+    
+    /**
      * Détermine si une Ressource peut-être modifiée
      * 
      * @static
@@ -77,4 +84,39 @@ class Parametres {
         }
     }
     
+    /**
+     * Retourn la tailler maximale uploadable
+     * 
+     * @return Int taille maximale d'upload
+     */
+    public static function getUploadMaxSize() {
+        return self::$uploadMaxSize;
+    }
+    
+    /**
+     * Retourne les extenssions admissibles en upload
+     * 
+     * @return Array(String) Retourne les extenssions autorisées en upload
+     */
+    public static function getUploadExtension() {
+        return self::$uploadExtension;
+    }
+    
+    /**
+     * Retourne l'emplacement d'upload des logos des commerçant
+     * 
+     * @return String Emplacement du stockage des logos commerçants
+     */
+    public static function getUploadLogoFolder() {
+        return self::$uploadLogoFolder;
+    }
+    
+    /**
+     * Retourne l'emplacement d'upload des logos des commerçant pour une page située dans la zone d'admin
+     * 
+     * @return String Emplacement du stockage des logos commerçants
+     */
+    public static function getUploadLogoFolderAdmin() {
+        return "../".self::$uploadLogoFolder;
+    }
 }

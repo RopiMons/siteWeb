@@ -1,13 +1,14 @@
 <?php
 include("includes/db_connect.php");
+include("includes/class.parametres.php");
 $q=$_GET["q"];
-$stmt = $bdd->prepare('SELECT commercenom,commercecontenu,commerceurl,commerceimage FROM commerce WHERE idcommerce =:id');
+$stmt = $bdd->prepare('SELECT commercenom,commercecontenu,commerceurl,commercelogo FROM commerce WHERE idcommerce =:id');
 $stmt->execute(array("id"=>$q));
 $donnees=$stmt->fetch();
 $nom = $donnees['commercenom'];
 $contenu = $donnees['commercecontenu'];
 $url = $donnees["commerceurl"];
-$image = $donnees["commerceimage"];
+$image = Parametres::getUploadLogoFolder().$donnees["commercelogo"];;
 $stmt->closeCursor();
 
 $stmt = $bdd->prepare('SELECT * FROM adresses WHERE adressescommerceid =:id AND adresses_catalogueadressesID = 3');
@@ -51,7 +52,7 @@ include("includes/menu.php");
 <div class="gris_clair">
      <div class="row-fluid corps">
          <div class="span12">
-             <?php echo '<img class="text-center" src="'.$image.'" style="max-height:350px"/>';?>
+             <?php echo '<img class="text-center" src="'.$image.'" style="max-height:150px"/>';?>
           </div>
       </div>
       
