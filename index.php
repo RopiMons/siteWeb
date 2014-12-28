@@ -35,10 +35,10 @@ include("includes/class.parametres.php");
         foreach($logo as $i => $log) {
             if ($i == 0) {
                 $target.='<li data-target="#myCarousel" data-slide-to="' . $i . '" class="active"></li>';
-                $slide.='<div class="active item text-center"><div class="inner-item"><a href=commerce.php?q="' . $id[$i] . '" title="voir le commerce">' . Image($log) . '</a></div></div>';
+                $slide.='<div class="active item text-center"><div class="inner-item"><a href=commerce.php?q=' . $id[$i] . ' title="voir le commerce">' . Image($log) . '</a></div></div>';
             } else {
                 $target.='<li data-target="#myCarousel" data-slide-to="' . $i . '"></li>';
-                $slide.='<div class="item text-center"><div class="inner-item"><a href=commerce.php?q="' . $id[$i] . '" title="voir le commerce">' . Image($log) . '</a></div></div>';
+                $slide.='<div class="item text-center"><div class="inner-item"><a href=commerce.php?q=' . $id[$i] . ' title="voir le commerce">' . Image($log) . '</a></div></div>';
             }
         }
         ?>
