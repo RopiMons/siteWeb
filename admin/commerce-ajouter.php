@@ -1,6 +1,8 @@
 <?php
 session_start();
 include("../includes/db_connect.php");
+include ("../includes/class.editeurRequette.php");
+include("../includes/class.requetteSelect.php");
 include("../includes/class.user.php");
 include("../includes/functions.php");
 include("../includes/class.verif.php");
@@ -209,55 +211,53 @@ if ($_SESSION["niveau"] >= 9) {
                 </header>
                 <div class="module_content">
                     <?php
-                    $stmt = $bdd->prepare('SELECT * FROM commerce WHERE idcommerce=:id');
-                    $stmt->execute(array("id" => $_GET["id"]));
-                    $donnees = $stmt->fetch();
+                    $req = new RequetteSelect("commerce", array("commercenom", "adresses.adressesnumero", "adresses.adressesrue", "adresses.adressescodepostal", "adresses.adresseslocalite", "adresses.adressespays", "personnes.nompersonnes", "personnes.prenompersonnes"));
+                    $req->where("idcommerce", ":id")
+                            ->leftJoin("adressescommerceid", "adresses", "idcommerce")
+                            ->leftJoin("compers_commerceID", "compers", "idcommerce")
+                            ->leftJoin("idpersonnes", "personnes", "compers_personnesID", "compers");
 
-                    echo "<p>Nom :" . $donnees["commercenom"] . "</p>";
+                    $stm = $bdd->prepare($req);
+                    $stm->execute(array(
+                        ":id" => $_GET["id"],
+                    ));
+                    $donnees = $stm->fetchAll();
+                    $stm->closeCursor();
 
-                    $stmt2 = $bdd->prepare('SELECT * FROM adresses WHERE adressescommerceid=:id');
-                    $stmt2->execute(array("id" => $donnees["idcommerce"]));
-                    while ($donnees2 = $stmt2->fetch()) {
-                        echo" <p>Adresse : " . $donnees2["adressesnumero"] . ", " . $donnees2["adressesrue"] . "<br/>" . $donnees2["adressescodepostal"] . " " . $donnees2["adresseslocalite"] . " <br /> " . $donnees2["adressespays"] . "</p>";
+                    echo "<p>Nom : " . $donnees[0]["commercenom"] . "</p>";
+
+                    $identites = Array();
+
+                    foreach ($donnees as $donnee) {
+                        echo " <p>Adresse : <br \>" . $donnee["adressesnumero"] . ", " . $donnee["adressesrue"] . "<br/>" . $donnee["adressescodepostal"] . " " . $donnee["adresseslocalite"] . " <br /> " . $donnee["adressespays"] . "</p>";
+                        $identites[] = " <p>Nom : " . $donnee["nompersonnes"] . ", prénom : " . $donnee["prenompersonnes"] . "</p>";
                     }
-                    $stmt2->closeCursor();
-
-                    $stmt2 = $bdd->prepare('SELECT * FROM compers WHERE compers_commerceID=:id');
-                    $stmt2->execute(array("id" => $donnees["idcommerce"]));
-                    while ($donnees2 = $stmt2->fetch()) {
-                        $stmt3 = $bdd->prepare('SELECT * FROM personnes WHERE idpersonnes=:id_personne');
-                        $stmt3->execute(array("id_personne" => $donnees2["compers_personnesID"]));
-                        $donnees3 = $stmt3->fetch();
-                        echo" <p>Nom : " . $donnees3["nompersonnes"] . ", prénom : " . $donnees3["prenompersonnes"] . "</p>";
-                        $stmt3->closeCursor();
+                    foreach ($identites as $identite){
+                        echo $identite;
                     }
-                    $stmt2->closeCursor();
+                }
+                ?>
+            </div><!-- end of .tab_container -->
 
+        </article><!-- end of content manager article -->
 
-                    $stmt->closeCursor();
-                    ?>
-                </div><!-- end of .tab_container -->
-
-            </article><!-- end of content manager article -->
-
-            <?php
-        }
-        if (isset($_GET["valid"])) {
-            $req = $bdd->prepare('UPDATE commerce SET commercestatus = 1 WHERE idcommerce = :id');
-            $req->execute(array(
-                'id' => $_GET["valid"]
-            ));
-            $message = '<h4 class="alert_success">Le commerce a été validé.</h4>';
-        }
-        if (isset($_GET["refus"])) {
-            $req = $bdd->prepare("DELETE FROM commerce WHERE idcommerce = :id");
-            $req->execute(array(
-                'id' => $_GET["refus"]
-            ));
-            $message = '<h4 class="alert_warning">Le commerce a été refusé et supprimé.</h4>';
-        }
-        echo $message;
-        ?>
+    <?php
+    if (isset($_GET["valid"])) {
+        $req = $bdd->prepare('UPDATE commerce SET commercestatus = 1 WHERE idcommerce = :id');
+        $req->execute(array(
+            'id' => $_GET["valid"]
+        ));
+        $message = '<h4 class="alert_success">Le commerce a été validé.</h4>';
+    }
+    if (isset($_GET["refus"])) {
+        $req = $bdd->prepare("DELETE FROM commerce WHERE idcommerce = :id");
+        $req->execute(array(
+            'id' => $_GET["refus"]
+        ));
+        $message = '<h4 class="alert_warning">Le commerce a été refusé et supprimé.</h4>';
+    }
+    echo $message;
+    ?>
         <article class="module width_full">
             <header><h3 class="tabs_involved">Liste des commerces en attente de validation</h3>
             </header>
@@ -273,16 +273,16 @@ if ($_SESSION["niveau"] >= 9) {
                             </tr> 
                         </thead> 
                         <tbody> 
-                            <?php
-                            $stmt = $bdd->prepare('SELECT * FROM commerce WHERE commercestatus=0');
-                            $stmt->execute();
-                            while ($donnees = $stmt->fetch()) {
-                                echo "<tr>
+    <?php
+    $stmt = $bdd->prepare('SELECT * FROM commerce WHERE commercestatus=0');
+    $stmt->execute();
+    while ($donnees = $stmt->fetch()) {
+        echo "<tr>
 						<td>" . $donnees["commercenom"] . "</td>";
-                                $stmt2 = $bdd->prepare('SELECT * FROM adresses WHERE adressescommerceid=:id');
-                                $stmt2->execute(array("id" => $donnees["idcommerce"]));
-                                $donnees2 = $stmt2->fetch();
-                                echo"<td>" . $donnees2["adressesnumero"] . ", " . $donnees2["adressesrue"] . "</td>
+        $stmt2 = $bdd->prepare('SELECT * FROM adresses WHERE adressescommerceid=:id');
+        $stmt2->execute(array("id" => $donnees["idcommerce"]));
+        $donnees2 = $stmt2->fetch();
+        echo"<td>" . $donnees2["adressesnumero"] . ", " . $donnees2["adressesrue"] . "</td>
 						<td>" . $donnees2["adressescodepostal"] . "</td>
 						
 						<td>
@@ -293,10 +293,10 @@ if ($_SESSION["niveau"] >= 9) {
 						</td>
 					
 					<tr>";
-                                $stmt2->closeCursor();
-                            }
-                            $stmt->closeCursor();
-                            ?>
+        $stmt2->closeCursor();
+    }
+    $stmt->closeCursor();
+    ?>
                         </tbody> 
                     </table>
                 </div><!-- end of #tab1 -->			
