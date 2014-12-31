@@ -3,9 +3,8 @@ session_start();
 include("includes.php");
 include("../includes/class.newsmanager.php");
 
-
-
 VerifConnection($bdd, $_SESSION, 9);
+$niveau = saveDB::getUserLevelBySession($bdd, $_SESSION);
 
 if (isset($_POST["IMUFile"])) {
     var_dump($_POST["IMUFile"]);
@@ -91,7 +90,7 @@ include("includes/header.php");
                                         $id_compers = true;
                                 }
                                 $stmt2->closeCursor();
-                                if ($_SESSION["niveau"] == 9 || $id_compers == true) {
+                                if ($niveau == 9 || $id_compers == true) {
 
                                     echo "<tr>
 						    <td>" . $donnees["commercenom"] . "</td>";
@@ -185,7 +184,7 @@ include("includes/header.php");
             }
         }
         $stmt->closeCursor();
-        if ($_SESSION["niveau"] == 9) {
+        if ($niveau == 9) {
             $verif_autorisation_mod = true;
 
             //Mise à jour des points ropi
@@ -410,7 +409,7 @@ include("includes/header.php");
                         <li><a href="<?php echo'../commerce.php?q=' . $_GET["edit"] . '' ?>" target="_blank">Aperçu</a></li>
                     </ul>
                     <?php
-                    if ($_SESSION["niveau"] == 9) {
+                    if ($niveau == 9) {
                         $stmt = $bdd->prepare('SELECT commercevaleurpublicitaire FROM commerce WHERE idcommerce=:id');
                         $stmt->execute(array("id" => $_GET["edit"]));
                         $donnees = $stmt->fetch();

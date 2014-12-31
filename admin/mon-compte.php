@@ -4,6 +4,8 @@ $menu='<a href="?add">Ajouter un membre</a>';
 include("includes.php");
 include("../includes/class.newsmanager.php");
 VerifConnection($bdd,$_SESSION,9);
+$niveau = saveDB::getUserLevelBySession($bdd, $_SESSION);
+
 $breadcrumbs='<a href="index.php">Index de l\'administration</a> <div class="breadcrumb_divider"></div> 
 				<a href="news.php">Gestion des membres</a> <div class="breadcrumb_divider"></div>
 				<a class="current">Toutes les news</a>';
@@ -94,7 +96,7 @@ include("includes/header.php");
             		<article class="module width_full">
 			<header><h3>Modifier le compte</h3></header>
 			<div class="module_content">
-            	Dans cette page, vous pouvez modifier votre compte. <?php  if($_SESSION["niveau"]==9)
+            	Dans cette page, vous pouvez modifier votre compte. <?php  if($niveau==9)
 		{
 			echo "<br />N'oubliez pas de cocher le niveau de l'utilisateur une fois que vous avez terminé.";
 		}

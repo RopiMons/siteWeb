@@ -1,12 +1,11 @@
 <?php
 session_start();
 include("includes.php");
-//VerifConnection($bdd,$_SESSION,$_SESSION["niveau"],2);
 
 $breadcrumbs='<a href="index.php">Index de l\'administration</a> <div class="breadcrumb_divider"></div> 
 	<a class="current">Déconnexion</a>';
 
-unset($_SESSION['username'],$_SESSION["password"], $_SESSION['userid'], $_SESSION["niveau"]);
+unset($_SESSION['username'],$_SESSION["password"], $_SESSION['userid']);
 
 include("includes/header.php");
 ?>

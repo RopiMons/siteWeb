@@ -15,17 +15,13 @@
 class saveDB {
     
     static function checkPermissions(PDO $bdd, $id, $password, $niveauRequis,  Ressource $ressource = null, $action = null){
-        $req = new RequetteSelect('personnes',"MAX(typepersonnepersonne.typepersonnepersonne_cataloguetypepersonne) AS niveau");
-        $req->where("idpersonnes", ":id")->where("passwordpersonnes", ":password");
-        $req->leftJoin("typeperonne_idpersonnes", "typepersonnepersonne", "idpersonnes");
-        
-        $retour = self::execute($bdd, $req->getSQL(), array(":id"=>$id,":password"=>$password));
-        
+       
         $authorized = false;
-        if(isset($retour[0]["niveau"]))
+        
+        if($niveau = self::getUserLevel($bdd, $id, $password))
         {
             //L'utilisateur existe
-            if($retour[0]["niveau"]>=$niveauRequis){
+            if($niveau>=$niveauRequis){
                 // Le groupe de l'utilisateur est Ok, pas besoin de plus de vérifications
                 $authorized = true;
             }elseif(isset($ressource) && isset($action) && $ressource->isProprietaire($id) && Parametres::getAutorisation($ressource, $action)){
@@ -37,20 +33,38 @@ class saveDB {
         return $authorized;
     }
     
-    static function executeSecureAdminRequest(PDO $bdd, $id, $password,  EditeurRequette $request, Ressource $ressource){
-        return saveDB::executeSecureRequest($bdd, $id, $password, "9", $request, $ressource);
+    static function executeSecureAdminRequest(PDO $bdd, $session, Ressource $ressource, EditeurRequette $request, $parametres){
+        return saveDB::executeSecureRequest($bdd, $session, "9", $ressource, $request, $parametres);
     }
     
-    static function executeSecureCommercantRequest(PDO $bdd, $id, $password,  EditeurRequette $request, Ressource $ressource){
-        return saveDB::executeSecureRequest($bdd, $id, $password, "6", $request, $ressource);
+    static function executeSecureCommercantRequest(PDO $bdd, $session, Ressource $ressource, EditeurRequette $request, $parametres = NULL){
+        return saveDB::executeSecureRequest($bdd, $session, "6", $ressource, $request, $parametres);
     }
 
-    static function executeSecureRequest(PDO $bdd, $id, $password, $niveauRequis, EditeurRequette $request,  Ressource $ressource){
-        if (saveDB::checkPermissions($bdd, $id, $password, $niveauRequis, $ressource, $request->getAction())){
-            
+    static function executeSecureRequest(PDO $bdd, $session, $niveauRequis, Ressource $ressource, EditeurRequette $request, $parametres = NULL ){
+        if (self::checkPermissions($bdd, $session["id"], $session["password"], $niveauRequis, $ressource, $request->getAction())){
+            return self::execute($bdd, $request->getSQL(), $parametres);
         }else{
             return FALSE;
         }
+    }
+    
+    static function getUserLevel($bdd,$id,$password){
+        $req = new RequetteSelect('personnes',"MAX(typepersonnepersonne.typepersonnepersonne_cataloguetypepersonne) AS niveau");
+        $req->where("idpersonnes", ":id")->where("passwordpersonnes", ":password");
+        $req->leftJoin("typeperonne_idpersonnes", "typepersonnepersonne", "idpersonnes");
+        
+        $retour = self::execute($bdd, $req->getSQL(), array(":id"=>$id,":password"=>$password));
+        
+        if(isset($retour[0]['niveau'])){
+            return $retour[0]['niveau'];
+        }else{
+            return false;
+        }
+    }
+    
+    static function getUserLevelBySession(PDO $bdd, Array $session){
+        return self::getUserLevel($bdd, $session['id'], $session['password']);
     }
     
     static private function execute(PDO $bdd, $sql, $parametres = null){

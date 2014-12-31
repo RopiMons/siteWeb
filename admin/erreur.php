@@ -7,7 +7,6 @@ if(!isset($_GET["msg"]))
 }
 include("includes.php");
 
-//VerifConnection($bdd,$_SESSION,$_SESSION["niveau"],1);
 include("includes/header.php");
 
 $message=array(
@@ -26,7 +25,7 @@ $message=array(
                 <?php 
 				if($_GET["msg"]==2)
 				{
-					unset($_SESSION['username'],$_SESSION["password"], $_SESSION['userid'], $_SESSION["niveau"]);
+					unset($_SESSION['username'],$_SESSION["password"], $_SESSION['userid']);
 					echo '<br /><p><a href="../connexion.php">Retour au formulaire de connexion</a></p>';
 				}?>
 			</div>

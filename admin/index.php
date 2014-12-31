@@ -3,6 +3,7 @@ session_start();
 include("includes.php");
 
 VerifConnection($bdd,$_SESSION,2);
+$niveau = saveDB::getUserLevelBySession($bdd, $_SESSION);
 
 $breadcrumbs='<a href="index.php">Index de l\'administration</a> <div class="breadcrumb_divider"></div> 
 	<a class="current">Panneau de contrôle</a>';
@@ -58,7 +59,7 @@ $moyenne=$calcul/$i;
 	
 	<section id="main" class="column">	
         <?php
-		if($_SESSION["niveau"]==9)
+		if($niveau==9)
 		{ 
 		?>	
 		<article class="module width_full">
@@ -118,7 +119,7 @@ $moyenne=$calcul/$i;
 			<header><h3>Autres</h3></header>
 				<div class="module_content">
 					<?php
-					if($_SESSION["niveau"]==9)
+					if($niveau==9)
 	{
 		echo "Modifier le nombre de Ropis en circulation";
 		$verif_autorisation_mod=true;

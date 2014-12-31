@@ -3,6 +3,7 @@ session_start();
 include("includes.php");
 include("../includes/class.newsmanager.php");
 VerifConnection($bdd, $_SESSION, 3);
+$niveau = saveDB::getUserLevelBySession($bdd, $_SESSION);
 
 $breadcrumbs = '<a href="index.php">Index de l\'administration</a> <div class="breadcrumb_divider"></div> 
 <a href="commerce.php">Mon commerce</a> <div class="breadcrumb_divider"></div> 
@@ -19,7 +20,7 @@ $pays = "";
 
 include("includes/header.php");
 
-if ($_SESSION["niveau"] == 3) {
+if ($niveau == 3) {
     if (isset($_POST["ajouter_commerce"])) {
         $verif_titre = Verif($_POST["titre"], "Titre du commerce", 3, 128);
         $verif_description = Verif($_POST["contenu"], "Description du commerce", 3);
@@ -195,7 +196,7 @@ if ($_SESSION["niveau"] == 3) {
 
     <?php
 }
-if ($_SESSION["niveau"] >= 9) {
+if ($niveau >= 9) {
     ?>
     <section id="main" class="column">	
         <?php
