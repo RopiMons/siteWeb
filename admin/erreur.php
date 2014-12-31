@@ -5,9 +5,9 @@ if(!isset($_GET["msg"]))
 {
 	header("location:index.php");
 }
-include("../includes/db_connect.php");
-include("../includes/class.user.php");
-//VerifConnection($bdd,$_SESSION["id"],$_SESSION["password"],$_SESSION["niveau"],1);
+include("includes.php");
+
+//VerifConnection($bdd,$_SESSION,$_SESSION["niveau"],1);
 include("includes/header.php");
 
 $message=array(

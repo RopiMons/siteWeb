@@ -9,48 +9,12 @@
  * @param Int $niveau Niveau d'accès de la personne liée à $id et $password 
  * @param Int $requis Niveau recquis pour l'accès à la page
  * @param Objet $ressource Paramètre optionnel qui de part sa présence autorise une personne à accèder à ses propres ressources 
- * @param String $action Action désirée sur l'objet {Edit,Add,Delete}
+ * @param String $action Action désirée sur l'objet {UPDATE,CREATE,DELETE}
  * @return null Redirection vers la page de connection en cas de non-autorisation.
  * 
  */
-function VerifConnection(PDO $bdd, $id, $password, $niveau, $requis, $ressource = null, $action = null) {
-    $auth = $niveau - $requis;
-    if ($auth < 0 && !isset($ressource) && !isset($action)) {
-        $ok = false;
-    } elseif ($auth >= 0) {
-        $ok = true;
-    } elseif ($auth < 0 && isset($ressource) && isset($action) && is_a($ressource, "Ressource")) {
-        if ($ressource->isProprietaire($id)) {
-            switch ($action) {
-                case "Edit" : $ok = Parametres::getAutorisationModification($ressource);
-                    break;
-                case "Add" : $ok = Parametres::getAutorisationCreation($ressource);
-                    break;
-                case "Delete" : $ok = Parametres::getAutorisationSuppression($ressource);
-                    break;
-                default : $ok = false;
-            }
-        } else {
-            $ok = false;
-        }
-    } else {
-        $ok = false;
-    }
-
-    if ($ok) {
-        $stmt = $bdd->prepare('SELECT idpersonnes,personnespseudo,passwordpersonnes FROM personnes WHERE idpersonnes= :id AND passwordpersonnes= :pass');
-        $stmt->execute(array(
-            'id' => $_SESSION["id"],
-            'pass' => $password
-        ));
-        $donnees = $stmt->fetch();
-
-        if (!$donnees && isset($donnees["id"])) {
-            header("location:erreur.php?msg=1");
-        }
-        $stmt->closeCursor();
-    } else {
-        //echo "Dehors !";
+function VerifConnection(PDO $bdd, $session, $requis) {
+    if(!isset($session['id']) || !isset($session['password'])|| !saveDB::checkPermissions($bdd, $session['id'], $session['password'], $requis)) {
         session_destroy();
         header("location:../connexion.php");
     }

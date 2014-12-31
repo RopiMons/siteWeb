@@ -68,4 +68,8 @@ abstract class EditeurRequette {
     public function __toString() {
         return $this->getSQL();
     }
+    
+    public function getAction(){
+        return $this->action;
+    }
 }

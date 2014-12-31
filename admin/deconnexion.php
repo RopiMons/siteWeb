@@ -1,8 +1,7 @@
 <?php
 session_start();
-include("../includes/db_connect.php");
-include("../includes/class.user.php");
-//VerifConnection($bdd,$_SESSION["id"],$_SESSION["password"],$_SESSION["niveau"],2);
+include("includes.php");
+//VerifConnection($bdd,$_SESSION,$_SESSION["niveau"],2);
 
 $breadcrumbs='<a href="index.php">Index de l\'administration</a> <div class="breadcrumb_divider"></div> 
 	<a class="current">Déconnexion</a>';

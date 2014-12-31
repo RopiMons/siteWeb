@@ -1,13 +1,8 @@
 <?php
 session_start();
-include("../includes/db_connect.php");
-include ("../includes/class.editeurRequette.php");
-include("../includes/class.requetteSelect.php");
-include("../includes/class.user.php");
-include("../includes/functions.php");
-include("../includes/class.verif.php");
+include("includes.php");
 include("../includes/class.newsmanager.php");
-VerifConnection($bdd, $_SESSION["id"], $_SESSION["password"], $_SESSION["niveau"], 3);
+VerifConnection($bdd, $_SESSION, 3);
 
 $breadcrumbs = '<a href="index.php">Index de l\'administration</a> <div class="breadcrumb_divider"></div> 
 <a href="commerce.php">Mon commerce</a> <div class="breadcrumb_divider"></div> 
@@ -211,7 +206,7 @@ if ($_SESSION["niveau"] >= 9) {
                 </header>
                 <div class="module_content">
                     <?php
-                    $req = new RequetteSelect("commerce", array("commercenom", "adresses.adressesnumero", "adresses.adressesrue", "adresses.adressescodepostal", "adresses.adresseslocalite", "adresses.adressespays", "personnes.nompersonnes", "personnes.prenompersonnes"));
+                    $req = new RequetteSelect("commerce", array("commerce.commercenom", "adresses.adressesnumero", "adresses.adressesrue", "adresses.adressescodepostal", "adresses.adresseslocalite", "adresses.adressespays", "personnes.nompersonnes", "personnes.prenompersonnes"));
                     $req->where("idcommerce", ":id")
                             ->leftJoin("adressescommerceid", "adresses", "idcommerce")
                             ->leftJoin("compers_commerceID", "compers", "idcommerce")

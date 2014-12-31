@@ -1,10 +1,7 @@
 <?php
 session_start();
-include("../includes/db_connect.php");
-include("../includes/class.user.php");
-include("../includes/class.verif.php");
-include("../includes/functions.php");
-VerifConnection($bdd,$_SESSION["id"],$_SESSION["password"],$_SESSION["niveau"],9);
+include("includes.php");
+VerifConnection($bdd,$_SESSION,9);
 
 $breadcrumbs='<a href="index.php">Index de l\'administration</a> <div class="breadcrumb_divider"></div> 
 	<a class="current">Panneau de contrôle</a>';

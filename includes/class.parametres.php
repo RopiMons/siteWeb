@@ -68,6 +68,16 @@ class Parametres {
         return $tab[2];
     }
     
+    static public function getAutorisation(Ressource $ressource, $action){
+        switch($action){
+            case 'DELETE' : return self::getAutorisationSuppression($ressource);
+            case 'UPDATE' : return self::getAutorisationModification($ressource);
+            case 'CREATE' : return self::getAutorisationCreation($ressource);
+            default : return false;
+        }
+    }
+
+
     /**
      * Retourne le tableau de paramètre en fonction de la Ressource passée
      * 

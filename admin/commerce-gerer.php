@@ -1,20 +1,12 @@
 <?php
 session_start();
-include("../includes/class.ressource.php");
-include("../includes/class.parametres.php");
-include("../includes/db_connect.php");
-include("../includes/class.user.php");
-include("../includes/functions.php");
-include("../includes/class.verif.php");
+include("includes.php");
 include("../includes/class.newsmanager.php");
 
 
-if (isset($_GET["edit"])) {
-    // On  vérifie si le propriétaire de la ressource peut acceder à cette page.
-    VerifConnection($bdd, $_SESSION["id"], $_SESSION["password"], $_SESSION["niveau"], 9, new Ressource("Commerce", $_GET["edit"], $bdd), "Edit");
-} else {
-    VerifConnection($bdd, $_SESSION["id"], $_SESSION["password"], $_SESSION["niveau"], 9);
-}
+
+VerifConnection($bdd, $_SESSION, 9);
+
 if (isset($_POST["IMUFile"])) {
     var_dump($_POST["IMUFile"]);
 }
