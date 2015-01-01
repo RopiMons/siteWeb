@@ -43,7 +43,7 @@ abstract class EditeurRequette {
      * @param String $tableCritere table du critère (Par défaut table donnée à l'initialisation)
      * @return \EditeurRequette
      */
-    public function where($critere, $valeur, $tableCritere = null) {
+    public function where($critere, $valeur, $tableCritere = null, $operateur = "=") {
         if (!$tableCritere) {
             $tableCritere = $this->table;
         }
@@ -52,7 +52,7 @@ abstract class EditeurRequette {
         } else {
             $this->where = $this->where . " AND ";
         }
-        $this->where = $this->where . $tableCritere . "." . $critere . " = " . $valeur;
+        $this->where = $this->where . $tableCritere . "." . $critere . " ".$operateur." " . $valeur;
 
         return $this;
     }

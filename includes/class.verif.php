@@ -1,11 +1,13 @@
 <?php
-function Verif($champ,$nom,$taillemin=0,$taillemax=1000000000,$type="",$regexp="",$confirmation="",$optionnel=""){
+function Verif($champ,$nom,$taillemin=0,$taillemax=1000000000,$type="",$regexp="",$confirmation="",$optionnel="",$bdd=null,$parametres=null){
 	$retour="";
 	$verif=TailleMin($champ, $taillemin);
 	if($verif==false) $retour.="Vous devez entrer au moins " . $taillemin . " caractères pour le champ \"" . $nom . "\".<br />";
 	$verif=TailleMax($champ, $taillemax);
 	if($verif=false) $retour.="Vous devez entrer au maximum " . $taillemax . " caractères pour le champ \"" . $nom . "\".<br />";
-	if($optionnel!="optionnel" || $optionnel=="optionnel" && strlen($champ!=0))
+	
+                
+        if($optionnel!="optionnel" || $optionnel=="optionnel" && strlen($champ!=0))
 	{
 		//Si on a besoin d'un regexp figurant parmis les types
 		if($type!="") 
@@ -19,6 +21,22 @@ function Verif($champ,$nom,$taillemin=0,$taillemax=1000000000,$type="",$regexp="
 		if($regexp!="")if(!RegExp($champ,$regexp)) $retour.="Le champ \"" . $nom . "\" n'est pas correct.<br />"; 
 	}
 	
+        if(($type=="pseudo" || $type=="email") && isset($parametres) && isset($bdd)){
+            if($type=="pseudo"){
+                $row = "personnespseudo";
+            }else{
+                $row = "mailpersonnes";
+            }
+            $requette = new RequetteSelect("personnes","COUNT(personnes.nompersonnes) AS nb");
+            $re = saveDB::execute($bdd, $requette->where($row,":val")->where("idpersonnes", ":id",null,"<>"),$parametres);
+            
+            if($re[0]["nb"]!=0){
+                $retour = "$nom  $champ existe déjà ! Merci d'en choisir un autre";               
+            }
+        }elseif($type=="pseudo"){
+            $retour = " Impossible de vérifier '$nom' $champ. Merci de signaler cette erreure au webmaster";
+        }
+        
 	//Si on veut vérifier que deux champs sont identiques
 	if($confirmation!="") 
 	{

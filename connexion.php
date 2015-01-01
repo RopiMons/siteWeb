@@ -1,11 +1,8 @@
 <?php
 session_start();
-include("includes/class.user.php");
-include("includes/class.newsmanager.php");
-//include("includes/class.verif.php");
+include("includes.php");
 include("includes/class.form.php");
-include("includes/db_connect.php");
-include("includes/class.verif.php");
+
 if (isset($_POST["Connexion"])) {
     $verif_pseudo = Verif($_POST["pseudo"], "pseudo", 2, 32);
     $verif_mdp = Verif($_POST["password"], "mot de passe", 5, 32);
@@ -88,7 +85,7 @@ include("includes/menu.php");
     $mail = (isset($_POST["mail"]) != "") ? $_POST["mail"] : "";
 
     if (isset($_POST["adduser"])) {
-        $message = CheckFormulaire($_POST["prenom"], $_POST["nom"], $_POST["pseudo"], $_POST["mail"], $_POST["pass"], $_POST["confirm"]);
+        $message = CheckFormulaire($_POST["prenom"], $_POST["nom"], $_POST["pseudo"], $_POST["mail"], $_POST["pass"], $_POST["confirm"],array("pseudo"=>array(":val"=>$_POST["pseudo"],":id"=>0),"email"=>array(":val"=>$_POST["mail"],":id"=>0)),$bdd);
         if ($message == 1) {
             $id = uniqid();
             $req = $bdd->prepare('INSERT INTO personnes(idpersonnes,nompersonnes,prenompersonnes,mailpersonnes,passwordpersonnes,personnespseudo)

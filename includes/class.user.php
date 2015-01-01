@@ -66,12 +66,12 @@ function Connexion($bdd, $pseudo, $mdp) {
     return($message == "") ? true : $message;
 }
 
-function CheckFormulaire($prenom, $nom, $pseudo, $mail, $password, $pwd2) {
+function CheckFormulaire($prenom, $nom, $pseudo, $mail, $password, $pwd2,$parametres=null,$bdd=null) {
     $verif_prenom = Verif($prenom, "prenom", 3, 16);
     $verif_nom = Verif($nom, "nom", 3, 32);
-    $verif_pseudo = Verif($pseudo, "pseudo", 2, 32);
+    $verif_pseudo = Verif($pseudo, "pseudo", 2, 32,"pseudo","","","",$bdd,$parametres["pseudo"]);
     $verif_mdp = Verif($password, "mot de passe", 5, 32, "", "", $pwd2);
-    $verif_mail = Verif($mail, "adresse E-mail", 8, 48, "email");
+    $verif_mail = Verif($mail, "adresse E-mail", 8, 48, "email","","","",$bdd,$parametres["email"]);
     if ($verif_prenom == 1 && $verif_nom == 1 && $verif_pseudo == 1 && $verif_mdp == 1 && $verif_mail == 1) {
         return 1;
     } else {

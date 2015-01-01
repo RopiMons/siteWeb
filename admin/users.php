@@ -32,7 +32,7 @@ function Niveau($bdd, $id, $niveaux) {
 }
 
 if (isset($_POST["adduser"])) {
-    $message = CheckFormulaire($_POST["prenom"], $_POST["nom"], $_POST["pseudo"], $_POST["mail"], $_POST["pass"], $_POST["confirm"]);
+    $message = CheckFormulaire($_POST["prenom"], $_POST["nom"], $_POST["pseudo"], $_POST["mail"], $_POST["pass"], $_POST["confirm"],array("pseudo"=>array(":val"=>$_POST["pseudo"],":id"=>0),"email"=>array(":val"=>$_POST["mail"],":id"=>0)),$bdd);
     if ($message == 1) {
         $id = uniqid();
         $req = $bdd->prepare('INSERT INTO personnes(idpersonnes,nompersonnes,prenompersonnes,mailpersonnes,passwordpersonnes,personnespseudo)

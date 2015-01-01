@@ -67,7 +67,7 @@ class saveDB {
         return self::getUserLevel($bdd, $session['id'], $session['password']);
     }
     
-    static private function execute(PDO $bdd, $sql, $parametres = null){
+    static public function execute(PDO $bdd, $sql, $parametres = null){
         $stmt = $bdd->prepare($sql);
         $stmt->execute($parametres);
         
