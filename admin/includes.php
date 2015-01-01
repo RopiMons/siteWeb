@@ -14,6 +14,7 @@ $includes = array(
     "class.parametres.php",
     "class.requetteSelect.php",
     "class.requetteUpdate.php",
+    "class.requetteInsert.php",
     "class.ressource.php",
     "class.saveDB.php",
 );

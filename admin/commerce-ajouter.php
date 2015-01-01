@@ -45,53 +45,67 @@ if ($niveau == 3) {
                         if ($verif_cp == 1) {
                             if ($verif_localite == 1) {
                                 if ($verif_pays == 1) {
+                                    
                                     $uniqid = uniqid();
                                     $id_adresse = "ad" . $uniqid;
                                     $id_commerce = "comm" . $uniqid;
 
-                                    $req = $bdd->prepare('INSERT INTO adresses(idadresses,adresses_personnesID,adresses_catalogueadressesID,adressesrue,adressesnumero,adressescodepostal,adresseslocalite,adressespays,adressescommerceid)
-				                        VALUES(:id_adresse,:id_user,:id_catalogue,:rue,:numero,:cp,:localite,:pays,:commerce)');
-                                    $req->execute(array(
+                                    $requettes = Array();
+
+                                    $requette = new RequetteInsert("adresses");
+                                    $requette->addValue("idadresses", ":id_adresse")->addValue("adresses_personnesID", ":id_user")->addValue("adresses_catalogueadressesID", ":id_catalogue")->addValue("adressesrue", ":rue")->addValue("adressesnumero", ":numero")->addValue("adressescodepostal", ":cp")->addValue("adresseslocalite", ":localite")->addValue("adressespays", ":pays")->addValue("adressescommerceid", ":commerce");
+                                    $paramRequette = array(
                                         'id_adresse' => $id_adresse,
                                         'id_user' => $_SESSION["id"],
-                                        'id_catalogue' => $_POST['type'],
+                                        'id_catalogue' => 3,
                                         'rue' => $_POST["rue"],
                                         'numero' => $_POST["numero"],
                                         'cp' => $_POST["cp"],
                                         'localite' => $_POST["localite"],
                                         'pays' => $_POST["pays"],
                                         'commerce' => $id_commerce
-                                    ));
+                                    );
+                                    $requettes[] = array($requette, $paramRequette);
+                                    echo $requette;
+                                    unset($requette);
+                                    unset($paramRequette);
 
-                                    $req = $bdd->prepare('INSERT INTO commerce(idcommerce,commercenom,commercecontenu,commercestatus)
-				                        VALUES(:id_commerce,:nom,:contenu,:status)');
-                                    $req->execute(array(
+                                    $requette = new RequetteInsert("commerce");
+                                    $requette->addValue("idcommerce,commercenom,commercecontenu,commercestatus", ":id_commerce,:nom,:contenu,:status");
+                                    $paramRequette = array(
                                         'id_commerce' => $id_commerce,
                                         'nom' => $_POST["titre"],
                                         'contenu' => $_POST["contenu"],
                                         'status' => 0
-                                    ));
+                                    );
+                                    $requettes[] = array($requette, $paramRequette);
+                                    unset($requette);
+                                    unset($paramRequette);
 
-                                    $req = $bdd->prepare('INSERT INTO compers(compers_personnesID,compers_commerceID)
-				                        VALUES(:id_user,:id_commerce)');
-                                    $req->execute(array(
+                                    $requette = new RequetteInsert("compers");
+                                    $requette->addValue("compers_personnesID,compers_commerceID", ":id_user,:id_commerce");
+                                    $paramRequette = array(
                                         'id_user' => $_SESSION["id"],
                                         'id_commerce' => $id_commerce
-                                    ));
-                                    $req = $bdd->prepare('INSERT INTO telephones(telephone_idcommerce)
-				                        VALUES(:id_commerce)');
-                                    $req->execute(array(
-                                        'id_commerce' => $id_commerce
-                                    ));
+                                    );
+                                    $requettes[] = array($requette, $paramRequette);
+                                    unset($requette);
+                                    unset($paramRequette);
+                                    try {
+                                        //Vu la liaison de toutes les données entre elles, on ouvre le mode transactionnel MySQL
+                                        $bdd->beginTransaction();
+                                        foreach ($requettes as $requette) {
+                                            saveDB::executeInsert($bdd, $requette[0]->getSQL(), $requette[1]);
+                                        }
 
-                                    $req = $bdd->prepare('INSERT INTO typecommerce(typecommerce_commerceID)
-				                        VALUES(:id_commerce)');
-                                    $req->execute(array(
-                                        'id_commerce' => $id_commerce
-                                    ));
+                                        $bdd->commit();
 
-
-                                    $message = '<h4 class="alert_success">Réussite - Votre commerce a été proposé.</h4>';
+                                        $message = '<h4 class="alert_success">Réussite - Votre commerce a été proposé.</h4>';
+                                    } catch (Exception $e) {
+                                        $bdd->rollback();
+                                        $message = "<h4 class='alert_error'>Une erreure technique nous empêche de proposer ce commerce pour l'instant<br \>".$e->getMessage()."</h4>";
+                                    }
+                                    
                                 } else
                                     $message = '<h4 class="alert_error">' . $verif_pays . '</h4>';
                             } else
@@ -158,20 +172,6 @@ if ($niveau == 3) {
                         <label for="pays">Pays</label>
                         <input type="text" name="pays" id="pays" value="<?php echo $pays ?>" />
                     </fieldset>
-                    <fieldset style="width:48%; float:left; "> <!-- to make two field float next to one another, adjust values accordingly -->
-                        <label>Type</label>
-                        <select title="type" name="type" id="type" style="width:92%;">
-                            <?php
-                            $stmt = $bdd->prepare('SELECT * FROM catalogueadresses');
-                            $stmt->execute(array(
-                            ));
-                            while ($donnees = $stmt->fetch()) {
-                                echo "<option value='" . $donnees["idcatalogueadresses"] . "'>" . $donnees["catalogueadresselabel"] . "</option>";
-                            }
-                            $stmt->closeCursor();
-                            ?>
-                        </select>
-                    </fieldset>
 
             </div>
             <div class="clear"></div>
@@ -228,7 +228,7 @@ if ($niveau >= 9) {
                         echo " <p>Adresse : <br \>" . $donnee["adressesnumero"] . ", " . $donnee["adressesrue"] . "<br/>" . $donnee["adressescodepostal"] . " " . $donnee["adresseslocalite"] . " <br /> " . $donnee["adressespays"] . "</p>";
                         $identites[] = " <p>Nom : " . $donnee["nompersonnes"] . ", prénom : " . $donnee["prenompersonnes"] . "</p>";
                     }
-                    foreach ($identites as $identite){
+                    foreach ($identites as $identite) {
                         echo $identite;
                     }
                 }
@@ -237,23 +237,23 @@ if ($niveau >= 9) {
 
         </article><!-- end of content manager article -->
 
-    <?php
-    if (isset($_GET["valid"])) {
-        $req = $bdd->prepare('UPDATE commerce SET commercestatus = 1 WHERE idcommerce = :id');
-        $req->execute(array(
-            'id' => $_GET["valid"]
-        ));
-        $message = '<h4 class="alert_success">Le commerce a été validé.</h4>';
-    }
-    if (isset($_GET["refus"])) {
-        $req = $bdd->prepare("DELETE FROM commerce WHERE idcommerce = :id");
-        $req->execute(array(
-            'id' => $_GET["refus"]
-        ));
-        $message = '<h4 class="alert_warning">Le commerce a été refusé et supprimé.</h4>';
-    }
-    echo $message;
-    ?>
+        <?php
+        if (isset($_GET["valid"])) {
+            $req = $bdd->prepare('UPDATE commerce SET commercestatus = 1 WHERE idcommerce = :id');
+            $req->execute(array(
+                'id' => $_GET["valid"]
+            ));
+            $message = '<h4 class="alert_success">Le commerce a été validé.</h4>';
+        }
+        if (isset($_GET["refus"])) {
+            $req = $bdd->prepare("DELETE FROM commerce WHERE idcommerce = :id");
+            $req->execute(array(
+                'id' => $_GET["refus"]
+            ));
+            $message = '<h4 class="alert_warning">Le commerce a été refusé et supprimé.</h4>';
+        }
+        echo $message;
+        ?>
         <article class="module width_full">
             <header><h3 class="tabs_involved">Liste des commerces en attente de validation</h3>
             </header>
@@ -269,16 +269,16 @@ if ($niveau >= 9) {
                             </tr> 
                         </thead> 
                         <tbody> 
-    <?php
-    $stmt = $bdd->prepare('SELECT * FROM commerce WHERE commercestatus=0');
-    $stmt->execute();
-    while ($donnees = $stmt->fetch()) {
-        echo "<tr>
+                            <?php
+                            $stmt = $bdd->prepare('SELECT * FROM commerce WHERE commercestatus=0');
+                            $stmt->execute();
+                            while ($donnees = $stmt->fetch()) {
+                                echo "<tr>
 						<td>" . $donnees["commercenom"] . "</td>";
-        $stmt2 = $bdd->prepare('SELECT * FROM adresses WHERE adressescommerceid=:id');
-        $stmt2->execute(array("id" => $donnees["idcommerce"]));
-        $donnees2 = $stmt2->fetch();
-        echo"<td>" . $donnees2["adressesnumero"] . ", " . $donnees2["adressesrue"] . "</td>
+                                $stmt2 = $bdd->prepare('SELECT * FROM adresses WHERE adressescommerceid=:id');
+                                $stmt2->execute(array("id" => $donnees["idcommerce"]));
+                                $donnees2 = $stmt2->fetch();
+                                echo"<td>" . $donnees2["adressesnumero"] . ", " . $donnees2["adressesrue"] . "</td>
 						<td>" . $donnees2["adressescodepostal"] . "</td>
 						
 						<td>
@@ -289,10 +289,10 @@ if ($niveau >= 9) {
 						</td>
 					
 					<tr>";
-        $stmt2->closeCursor();
-    }
-    $stmt->closeCursor();
-    ?>
+                                $stmt2->closeCursor();
+                            }
+                            $stmt->closeCursor();
+                            ?>
                         </tbody> 
                     </table>
                 </div><!-- end of #tab1 -->			

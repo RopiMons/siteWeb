@@ -38,7 +38,7 @@ class saveDB {
     }
     
     static function executeSecureCommercantRequest(PDO $bdd, $session, Ressource $ressource, EditeurRequette $request, $parametres = NULL){
-        return saveDB::executeSecureRequest($bdd, $session, "6", $ressource, $request, $parametres);
+        return saveDB::executeSecureRequest($bdd, $session, "3", $ressource, $request, $parametres);
     }
 
     static function executeSecureRequest(PDO $bdd, $session, $niveauRequis, Ressource $ressource, EditeurRequette $request, $parametres = NULL ){
@@ -46,6 +46,7 @@ class saveDB {
             switch($request->getAction()){
                 case "SELECT" : return self::execute($bdd, $request->getSQL(), $parametres);
                 case "UPDATE" : return self::executeUpdate($bdd, $request->getSQL(), $parametres);
+                case "INSERT" : return self::executeInsert($bdd, $request->getSQL(), $parametres);
             }
             
         }else{
@@ -84,6 +85,10 @@ class saveDB {
     static public function executeUpdate(PDO $bdd, $sql, $parametres = NULL){
         $stmt = $bdd->prepare($sql);
         return $stmt->execute($parametres);
+    }
+    
+    static public function executeInsert(PDO $bdd, $sql, $parametres = NULL){
+        return self::executeUpdate($bdd, $sql, $parametres);
     }
  
 }
