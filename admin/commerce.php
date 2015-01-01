@@ -43,30 +43,35 @@ include("includes/header.php");
                     </thead> 
                     <tbody> 
 <?php
-$i = 0;
-$stmt = $bdd->prepare('SELECT * FROM compers WHERE compers_personnesID = :id');
-$stmt->execute(array("id" => $_SESSION["id"]));
-while ($donnees = $stmt->fetch()) {
-    $i++;
-    $comm = $bdd->prepare('SELECT * FROM commerce WHERE idcommerce = :id_comm');
-    $comm->execute(array("id_comm" => $donnees["compers_commerceID"]));
-    $donnees2 = $comm->fetch();
+$request = new RequetteSelect("compers",array(
+    "commerce.commercestatus",
+    "commerce.commercenom",
+    "commerce.idcommerce"
+));
 
-    echo "<tr>
-	  <td>" . $donnees2["commercenom"] . "</td>
-	  <td>" . Status($donnees2["commercestatus"]) . "</td>";
-    
-    if($donnees2["commercestatus"]>0)
-    {
-        echo "<td><a href='commerce-gerer.php?edit=" . $donnees2["idcommerce"] . "' title='pages'><input type='image' src='images/icn_edit.png' title='Edit'></a>
-              </tr>";//"<a href='commerce-gerer.php?del=" . $donnees2["idcommerce"] . "' title='pages'><input type='image' src='images/icn_trash.png' title='Trash'></a></td>";
-    }else{
-        echo "<td>Pas d'actions possible pour l'instant</td>";
+$request->where("compers_personnesID", ":id");
+$request->innerJoin("idcommerce", "commerce", "compers_commerceID");
+
+$i=0;
+
+//On effectue la vérification sur la ressource "Personne" car c'est de cet ID que découle la jointure avec les commerces.
+if($donnes = saveDB::executeSecureAdminRequest($bdd, $_SESSION, new Ressource("Personne", $_SESSION["id"], $bdd), $request, array(':id'=>$_SESSION["id"])))
+{
+    foreach ($donnes as $i => $donnees2){
+        echo "<tr>
+              <td>" . $donnees2["commercenom"] . "</td>
+              <td>" . Status($donnees2["commercestatus"]) . "</td>";
+
+        if($donnees2["commercestatus"]>0)
+        {
+            echo "<td><a href='commerce-gerer.php?edit=" . $donnees2["idcommerce"] . "' title='pages'><input type='image' src='images/icn_edit.png' title='Edit'></a>
+                  </tr>";//"<a href='commerce-gerer.php?del=" . $donnees2["idcommerce"] . "' title='pages'><input type='image' src='images/icn_trash.png' title='Trash'></a></td>";
+        }else{
+            echo "<td>Pas d'actions possible pour l'instant</td>";
+        }
+            echo "<tr>";
     }
-	echo "<tr>";
-    $comm->closeCursor();
 }
-$stmt->closeCursor();
 ?>
                     </tbody> 
                 </table>
@@ -78,7 +83,7 @@ $stmt->closeCursor();
         <header><h3>Messages</h3></header>
         <div class="message_list">
             <div class="module_content">
-                <div class="message"><p>Vous pouvez gérer <?= $i ?> commerces. </p></div>
+                <div class="message"><p>Vous pouvez gérer <?php echo $i+1; ?> commerce<?php if($i+1>1): echo "s"; endif; ?>. </p></div>
                 <div class="message"><p><a href="commerce-ajouter.php">Ajouter un nouveau commerce</a></p></div>
             </div>
         </div>

@@ -43,10 +43,26 @@ class RequetteSelect extends EditeurRequette {
      * @return \EditeurRequette Objet modifié
      */
     public function leftJoin($critereLocal, $tableLocale, $critereDistant, $tableDistante = null) {
+        return $this->join($critereLocal, $tableLocale, $critereDistant, $tableDistante, 'LEFT JOIN');
+    }
+    
+    /**
+     * Permet de réaliser une jointure naturelle
+     * @param String $critereLocal Critère sur la table locale de jointure
+     * @param String $tableLocale Table à jointer
+     * @param String $critereDistant Critère sur la table d'origine
+     * @param String $tableDistante Table d'origine (Défaut, table passée à l'initialisation)
+     * @return \EditeurRequette Objet modifié
+     */
+    public function innerJoin($critereLocal, $tableLocale, $critereDistant, $tableDistante = null) {
+        return $this->join($critereLocal, $tableLocale, $critereDistant, $tableDistante, 'INNER JOIN');
+    }
+    
+    private function join($critereLocal, $tableLocale, $critereDistant, $tableDistante = null, $instruction = "INNER JOIN"){
         if (!$tableDistante) {
             $tableDistante = $this->table;
         }
-        $this->join = $this->join . " LEFT JOIN " . $tableLocale . " ON " . $tableLocale . "." . $critereLocal . " = " . $tableDistante . "." . $critereDistant;
+        $this->join = $this->join . " " . $instruction . " " . $tableLocale . " ON " . $tableLocale . "." . $critereLocal . " = " . $tableDistante . "." . $critereDistant;
 
         return $this;
     }
