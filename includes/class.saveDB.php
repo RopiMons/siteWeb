@@ -17,7 +17,7 @@ class saveDB {
     static function checkPermissions(PDO $bdd, $id, $password, $niveauRequis,  Ressource $ressource = null, $action = null){
        
         $authorized = false;
-        
+                
         if($niveau = self::getUserLevel($bdd, $id, $password))
         {
             //L'utilisateur existe
@@ -43,7 +43,11 @@ class saveDB {
 
     static function executeSecureRequest(PDO $bdd, $session, $niveauRequis, Ressource $ressource, EditeurRequette $request, $parametres = NULL ){
         if (self::checkPermissions($bdd, $session["id"], $session["password"], $niveauRequis, $ressource, $request->getAction())){
-            return self::execute($bdd, $request->getSQL(), $parametres);
+            switch($request->getAction()){
+                case "SELECT" : return self::execute($bdd, $request->getSQL(), $parametres);
+                case "UPDATE" : return self::executeUpdate($bdd, $request->getSQL(), $parametres);
+            }
+            
         }else{
             return FALSE;
         }
@@ -75,6 +79,11 @@ class saveDB {
         $stmt->closeCursor();
         
         return $retour;
+    }
+    
+    static public function executeUpdate(PDO $bdd, $sql, $parametres = NULL){
+        $stmt = $bdd->prepare($sql);
+        return $stmt->execute($parametres);
     }
  
 }

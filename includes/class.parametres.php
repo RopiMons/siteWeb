@@ -17,10 +17,11 @@
 class Parametres {
     /**
      * Ces tableaux définissent si un propriétaire peux sur la ressource spécifiée ...
-     * Sémantique array(Créer une ressource, Modifier sa ressource, Supprimer sa ressource )
+     * Sémantique array(Créer une ressource, Modifier sa ressource, Supprimer sa ressource, Voir une ressource )
      */
-    static $commerce = array(true,true,true);
-    static $default = array(false,false,false);
+    static $commerce = array(true,true,true,true);
+    static $personne = array(true,true,false,true);
+    static $default = array(false,false,false,false);
     
     /**
      * Il s'aggit ici des paramètres concernant l'upload de fichiers
@@ -42,17 +43,18 @@ class Parametres {
         return $tab[1];
     }
     
+       
      /**
-     * Détermine si une Ressource peut-être créer
+     * Détermine si une Ressource peut-être vue par son propriétaire
      * 
      * @static
      * @param Ressource $ressource La ressource pour laquelle l'autorisation doit-être vérifiée
      * @return bool Est-ce qu'un propriétaire de cette ressource peut effectuer cette action ?
      * 
      */
-    static public function getAutorisationCreation(Ressource $ressource){
+    static public function getAutorisationVoir(Ressource $ressource){
         $tab = self::getTab($ressource);
-        return $tab[0];
+        return $tab[3];
     }
     
      /**
@@ -73,6 +75,7 @@ class Parametres {
             case 'DELETE' : return self::getAutorisationSuppression($ressource);
             case 'UPDATE' : return self::getAutorisationModification($ressource);
             case 'CREATE' : return self::getAutorisationCreation($ressource);
+            case 'SELECT' : return self::getAutorisationVoir($ressource);
             default : return false;
         }
     }
@@ -89,7 +92,8 @@ class Parametres {
     private static function getTab(Ressource $ressource){
         switch ($ressource->getType())
         {
-            case "Commerce" : return self::$commerce; 
+            case "Commerce" : return self::$commerce;
+            case "Personne" : return self::$personne;
             default : return self::$default;
         }
     }

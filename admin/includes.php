@@ -13,6 +13,7 @@ $includes = array(
     "class.editeurRequette.php",
     "class.parametres.php",
     "class.requetteSelect.php",
+    "class.requetteUpdate.php",
     "class.ressource.php",
     "class.saveDB.php",
 );

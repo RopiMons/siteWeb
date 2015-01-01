@@ -81,7 +81,7 @@ function CheckFormulaire($prenom, $nom, $pseudo, $mail, $password, $pwd2,$parame
         $retour.=($verif_pseudo != 1) ? $verif_pseudo : "";
         $retour.=($verif_mdp != 1) ? $verif_mdp : "";
         $retour.=($verif_mail != 1) ? $verif_mail : "";
-        return '<div class="alert alert-error">Erreur :' . $retour . '</div>';
+        return '<div class="alert alert-error">Erreur : ' . $retour . '</div>';
     }
 }
 

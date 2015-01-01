@@ -20,11 +20,11 @@ class Ressource {
     /**
      * Constructeur de la classe Ressource. Il permet de trouver l'ID du propriétaire types de Ressources supportée :
      * -> Commerce
-     * ->
+     * -> Personne
      * 
      * Attention, pour ajouter une Ressource, il faut égallement mettre à jour la classe Paramètre
      * 
-     * @param String $type Type de la ressource passée {Commerce,}
+     * @param String $type Type de la ressource passée {Commerce, Personne}
      * @param String $id Id de la ressource passée en paramètre
      * @param PDO $bdd Objet PDO permettant la connection à la base de donnée
      * 
@@ -36,6 +36,7 @@ class Ressource {
         switch ($type)
         {
             case "Commerce" : $this->initCommerce($id,$bdd); break;
+            case "Personne" : $this->initPersonne($id,$bdd); break;
         }
         
         return $this;
@@ -48,16 +49,14 @@ class Ressource {
      * @return null Met à jour la variable $propriétaire de l'objet
      */
     private function initCommerce($id,PDO $bdd){
-        $req = $bdd->prepare("SELECT compers_personnesID FROM compers WHERE compers_commerceID = :id");
-        $req->execute(array(
-            "id"=>$id,
-        ));
+        $req = new RequetteSelect("compers","compers_personnesID AS id");
+        $req->where("compers_commerceID", ":id");
         
-        if($donnees = $req->fetch()){
-            $this->idProprietaire = $donnees["compers_personnesID"];
-        }
-        
-        $req->closeCursor();
+        $this->init($bdd, $req, array(":id"=>$id));
+    }
+    
+    private function initPersonne($id, PDO $bdd){
+        $this->idProprietaire = $id;
     }
     
     /**
@@ -86,5 +85,12 @@ class Ressource {
      */
     public function isProprietaire($id){
         return $id == $this->idProprietaire;
+    }
+    
+    private function init(PDO $bdd,  EditeurRequette $request, Array $parametres){
+        if($donnees = saveDB::execute($bdd, $request->getSQL(),$parametres)){
+            $this->idProprietaire = $donnees["id"];
+        }
+        return $this;
     }
 }

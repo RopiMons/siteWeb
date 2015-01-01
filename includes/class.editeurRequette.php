@@ -13,7 +13,7 @@
  */
 abstract class EditeurRequette {
 
-    private $action; //{EDIT,DELETE,UPDATE,SELECT}
+    private $action; //{INSERT,DELETE,UPDATE,SELECT}
     protected $table; // Table où aura lieu la requette SQL principale
     protected $sql; // Code SQL généré
     private $where; //Conditions
@@ -27,8 +27,8 @@ abstract class EditeurRequette {
      */
 
     public function __construct($action, $table) {
-        if ($action == 'DELETE' || $action == 'EDIT' || $action == 'SELECT' || $action == 'UPDATE') {
-            $this->action;
+        if ($action == 'DELETE' || $action == 'INSERT' || $action == 'SELECT' || $action == 'UPDATE') {
+            $this->action = $action;
             $this->table = $table;
             return $this;
         } else {

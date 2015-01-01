@@ -14,7 +14,6 @@ if (isset($_POST["Connexion"])) {
     }
 }
 
-include("includes/functions.php");
 $titre_page = TitrePage($bdd, "", "Connexion");
 ?>
 
