@@ -5,7 +5,7 @@
         <header class="gris">
             <div class="row-fluid">
                 <div class="span8 logo">
-                    <a href="index.php" title="accueil"><img src="img/logo.png"/></a>
+                    <a href="index.php" title="accueil"><img src="img/logo.png" style="width: 125px"></a>
                 </div>
                 <div class="span4">
                 <?php $i=0; $stmt = $bdd->prepare('SELECT idcommerce FROM commerce');
